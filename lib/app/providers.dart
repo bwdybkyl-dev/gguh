@@ -1,0 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/auth/data/auth_repository.dart';
+import '../features/auth/data/user_model.dart';
+import '../features/chat/data/chat_repository.dart';
+import '../features/majors/data/major_repository.dart';
+import '../features/majors/data/major_model.dart';
+import '../services/firebase_services.dart';
+final authServiceProvider=Provider((_)=>AuthService(FirebaseAuth.instance));
+final authRepositoryProvider=Provider((ref)=>AuthRepository(ref.watch(authServiceProvider),FirebaseFirestore.instance));
+final authStateProvider=StreamProvider<User?>((ref)=>ref.watch(authServiceProvider).changes);
+final currentUserProvider=StreamProvider<UserModel?>((ref){final uid=ref.watch(authStateProvider).valueOrNull?.uid; return uid==null?Stream.value(null):ref.watch(authRepositoryProvider).watchUser(uid);});
+final majorRepositoryProvider=Provider((_)=>MajorRepository(FirebaseFirestore.instance));
+final majorsProvider=StreamProvider<List<MajorModel>>((ref)=>ref.watch(majorRepositoryProvider).watchMajors());
+final chatRepositoryProvider=Provider((_)=>ChatRepository(FirebaseFirestore.instance));

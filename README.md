@@ -1,16 +1,11 @@
-# untitled2
+# Smart Educational Advisor
 
-A new Flutter project.
+Flutter + Firebase application foundation for student, advisor, and administrator flows. It uses Firebase Authentication, Firestore streams for real-time data/chat, Storage-ready attachment services, and Riverpod dependency injection.
 
-## Getting Started
+## Setup
+1. Run `flutterfire configure` to create platform configuration for your Firebase project.
+2. Enable Email/Password authentication, Cloud Firestore, Storage, and Cloud Messaging.
+3. Deploy `firestore.rules` and `storage.rules` after review.
+4. Run `flutter pub get` then `flutter analyze`.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The collection contract is documented in [docs/firebase_schema.md](docs/firebase_schema.md).

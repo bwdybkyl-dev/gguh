@@ -1,1 +1,5 @@
-class Validators { static String? required(String? value){if(value==null||value.trim().isEmpty)return 'هذا الحقل مطلوب.';return null;} static String? email(String? value){if(value==null||!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value))return 'البريد الإلكتروني غير صحيح.';return null;} static String? password(String? value){if(value==null||value.length<6)return 'كلمة المرور يجب أن تتكون من 6 أحرف على الأقل.';return null;} static String? gpa(String? value){final score=double.tryParse(value??'');if(score==null||score<0||score>5)return 'المعدل غير صالح.';return null;} }
+abstract final class Validators {
+  static String? required(String? value, {String label = 'الحقل'}) => value == null || value.trim().isEmpty ? '$label مطلوب' : null;
+  static String? email(String? value) => value == null || !RegExp(r'^\S+@\S+\.\S+$').hasMatch(value) ? 'أدخل بريداً إلكترونياً صحيحاً' : null;
+  static String? password(String? value) => value == null || value.length < 8 ? 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل' : null;
+}
