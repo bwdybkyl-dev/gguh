@@ -1,0 +1,2 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+class FcmNotificationService { FcmNotificationService(this._messaging); final FirebaseMessaging _messaging; Future<String?> register() async { final settings=await _messaging.requestPermission(alert:true,badge:true,sound:true); if(settings.authorizationStatus==AuthorizationStatus.denied) return null; return _messaging.getToken(); } Stream<RemoteMessage> get foregroundMessages=>FirebaseMessaging.onMessage; Stream<RemoteMessage> get openedMessages=>FirebaseMessaging.onMessageOpenedApp; }

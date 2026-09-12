@@ -1,0 +1,2 @@
+import 'package:flutter/material.dart'; import '../../../core/widgets/app_async_state.dart';
+class RecommendationsScreen extends StatelessWidget{const RecommendationsScreen({super.key});@override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('التوصيات الذكية')),body:const AppEmptyState(title:'لم تُنشأ توصيات بعد',message:'أكمل ملفك وأحد الاختبارات ليحلل النظام توافقك مع التخصصات.',icon:Icons.auto_awesome_outlined));}

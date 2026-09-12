@@ -1,0 +1,3 @@
+import '../../data/models/question_model.dart';
+class AssessmentScoringService { const AssessmentScoringService(); Map<String,double> score(Iterable<QuestionModel> questions, Map<String,String> answers) { final totals=<String,double>{}; for(final question in questions){final optionId=answers[question.id]; if(optionId==null) continue; final option=question.options.where((item)=>item.id==optionId).firstOrNull; if(option==null) continue; option.scores.forEach((key,value)=>totals[key]=(totals[key] ?? 0)+value); } return totals; } }
+extension _FirstOrNull<T> on Iterable<T> { T? get firstOrNull => isEmpty ? null : first; }

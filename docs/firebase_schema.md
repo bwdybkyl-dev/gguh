@@ -1,18 +1,27 @@
-# Firebase data contract
+# مخطط Firestore
 
-All timestamps are Firestore `Timestamp`s and documents use their Firestore ID as the model ID.
+## المجموعات الأساسية
 
-| Collection | Primary fields | Access |
+| المجموعة | المفتاح والعلاقات | أهم الحقول |
 |---|---|---|
-| `users` | name, email, phone, role, photoUrl, isActive, createdAt | Owner/admin |
-| `students` | userId, university, college, department, academicLevel, gpa, skillIds, interests | Owner/admin |
-| `advisors` | userId, specialization, experience, bio, approvalStatus | Public read; owner/admin write |
-| `majors`, `skills`, categories | name, description, requirements, isActive | Signed-in read; admin write |
-| `assessments`, `questions`, `answers`, `assessment_results` | assessmentId, studentId, scores, submittedAt | Participant/admin |
-| `recommendations` | studentId, majorId, matchPercentage, reasons, missingSkillIds | Student/admin |
-| `consultations`, `appointments`, `availability` | studentId, advisorId, status, schedule | Related users/admin |
-| `conversations` | participantIds, consultationId, lastMessage, updatedAt | Participants only |
-| `conversations/{id}/messages` | senderId, receiverId, text, type, attachment, replyToMessageId, reactions, status, isDeleted | Conversation participants |
-| `notifications`, `calls`, `reports` | recipientId, type, payload, createdAt | Recipient/admin |
+| `users/{uid}` | مصدر الدور والحساب | `name`, `email`, `role`, `isActive`, `photoUrl`, `lastSeenAt` |
+| `students/{uid}` | امتداد لـ`users` | `university`, `academicLevel`, `gpa`, `skillIds`, `interestIds` |
+| `advisors/{uid}` | امتداد لـ`users` | `specialization`, `approvalStatus`, `rating`, `isAvailable` |
+| `majors/{id}` | مرجع من التوصيات | `name`, `requiredSkillIds`, `interests`, `careers`, `isActive` |
+| `assessments/{id}/questions/{id}` | اختبار database-driven | `text`, `order`, `options[{id,text,scores}]` |
+| `assessment_results/{id}` | طالب واختبار | `studentId`, `assessmentId`, `answers`, `scores`, `submittedAt` |
+| `recommendations/{id}` | طالب وتخصص | `studentId`, `majorId`, `matchPercentage`, `reasons`, `strengths`, `weaknesses` |
+| `consultations/{id}` | طالب ومستشار ومحادثة | `studentId`, `advisorId`, `status`, `conversationId`, `rating` |
+| `appointments/{id}` | طالب ومستشار | `startsAt`, `endsAt`, `status`, `consultationId` |
+| `conversations/{id}` | المشاركون والاستشارة | `participantIds`, `lastMessage`, `unreadCounts`, `typingUserIds`, `updatedAt` |
+| `conversations/{id}/messages/{id}` | رسالة آنية | `senderId`, `type`, `text`, `attachment`, `replyToMessageId`, `status` |
+| `conversations/{id}/messages/{id}/reactions/{uid}` | تفاعل واحد للمستخدم | `userId`, `emoji`, `createdAt` |
+| `notifications/{id}` | إشعار داخل التطبيق | `recipientId`, `type`, `title`, `body`, `data`, `isRead` |
+| `calls/{id}` | lifecycle فقط | `conversationId`, `callerId`, `recipientId`, `status`, `providerRoomId` |
 
-Deploy `firestore.rules` and `storage.rules` after reviewing organization-specific policies. Configure Firebase with `flutterfire configure`; no project credentials are committed.
+## العمليات الآمنة
+
+- التسجيل ينشئ حساب Auth ثم مستندي `users` و`students` أو `advisors` في Batch.
+- يختار الطالب موعداً متاحاً عبر معاملة Firestore في طبقة المستودع لمنع الحجز المزدوج.
+- قبول الاستشارة يربطها بمحادثة تضم الطالب والمستشار فقط.
+- ترسل الدالة السحابية عند إنشاء رسالة إشعاراً محفوظاً في Firestore؛ يرسل FCM من خادم موثوق وفق مفاتيح وتهيئة المشروع.

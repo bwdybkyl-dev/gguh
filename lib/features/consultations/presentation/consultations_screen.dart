@@ -1,0 +1,2 @@
+import 'package:flutter/material.dart';import '../../../core/widgets/app_async_state.dart';
+class ConsultationsScreen extends StatelessWidget{const ConsultationsScreen({super.key});@override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('الاستشارات')),body:const AppEmptyState(title:'لا توجد استشارات حتى الآن',message:'يمكنك اختيار مستشار مناسب وإرسال طلب استشارة من دليل المستشارين.',icon:Icons.forum_outlined));}
