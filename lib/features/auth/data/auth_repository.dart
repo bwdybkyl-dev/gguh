@@ -1,0 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../services/firebase_services.dart';
+import 'user_model.dart';
+class AuthRepository { AuthRepository(this.auth,this.db); final AuthService auth; final FirebaseFirestore db; Stream<UserModel?> watchUser(String id)=>db.collection('users').doc(id).snapshots().map((doc)=>doc.exists?UserModel.fromMap(doc.id,doc.data()!):null);
+Future<UserModel> signIn(String email,String password) async { final credential=await auth.signIn(email,password); final doc=await db.collection('users').doc(credential.user!.uid).get(); if(!doc.exists) throw StateError('لم يتم العثور على ملف المستخدم.'); return UserModel.fromMap(doc.id,doc.data()!); }
+Future<UserModel> register({required String name,required String email,required String password,required String phone,required UserRole role,required Map<String,dynamic> profile}) async { final credential=await auth.register(email,password); final user=UserModel(id:credential.user!.uid,name:name,email:email,phone:phone,role:role,createdAt:DateTime.now()); final batch=db.batch(); batch.set(db.collection('users').doc(user.id),user.toMap()); batch.set(db.collection(role==UserRole.student?'students':'advisors').doc(user.id),{...profile,'userId':user.id,'createdAt':FieldValue.serverTimestamp(),'updatedAt':FieldValue.serverTimestamp(),if(role==UserRole.advisor)'approvalStatus':'pending'}); await batch.commit(); return user; }
+Future<void> signOut()=>auth.signOut(); Future<void> resetPassword(String email)=>auth.resetPassword(email); }

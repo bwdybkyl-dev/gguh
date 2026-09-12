@@ -1,0 +1,4 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../app/providers.dart';
+class RoleDashboardScreen extends ConsumerWidget {const RoleDashboardScreen({super.key,required this.title});final String title;@override Widget build(BuildContext context,WidgetRef ref)=>Scaffold(appBar:AppBar(title:Text(title),actions:[IconButton(onPressed:()=>ref.read(authRepositoryProvider).signOut(),icon:const Icon(Icons.logout))]),body:Center(child:Padding(padding:const EdgeInsets.all(24),child:Column(mainAxisSize:MainAxisSize.min,children:[const Icon(Icons.admin_panel_settings_outlined,size:56),const SizedBox(height:16),Text('تُحمّل بيانات لوحة التحكم من Firestore.',style:Theme.of(context).textTheme.titleMedium,textAlign:TextAlign.center),const SizedBox(height:16),FilledButton(onPressed:()=>Navigator.pushNamed(context,'/chat'),child:const Text('المحادثات'))])));}
