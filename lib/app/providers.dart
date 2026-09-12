@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/data/auth_repository.dart';
 import '../features/auth/data/user_model.dart';
-import '../features/chat/data/chat_repository.dart';
+import '../data/repositories/chat_repository.dart';
 import '../features/majors/data/major_repository.dart';
 import '../features/majors/data/major_model.dart';
+import '../data/repositories/assessment_repository.dart';
 import '../services/firebase_services.dart';
 final authServiceProvider=Provider((_)=>AuthService(FirebaseAuth.instance));
 final authRepositoryProvider=Provider((ref)=>AuthRepository(ref.watch(authServiceProvider),FirebaseFirestore.instance));
@@ -14,3 +15,4 @@ final currentUserProvider=StreamProvider<UserModel?>((ref){final uid=ref.watch(a
 final majorRepositoryProvider=Provider((_)=>MajorRepository(FirebaseFirestore.instance));
 final majorsProvider=StreamProvider<List<MajorModel>>((ref)=>ref.watch(majorRepositoryProvider).watchMajors());
 final chatRepositoryProvider=Provider((_)=>ChatRepository(FirebaseFirestore.instance));
+final assessmentRepositoryProvider=Provider((_)=>AssessmentRepository(FirebaseFirestore.instance));
