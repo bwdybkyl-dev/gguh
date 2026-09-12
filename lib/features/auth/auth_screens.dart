@@ -1,0 +1,295 @@
+import 'package:flutter/material.dart';
+
+import '../../core/utils/validators.dart';
+import '../../widgets/app_widgets.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> form = GlobalKey<FormState>();
+
+  final TextEditingController email = TextEditingController(
+    text: 'sara@example.com',
+  );
+
+  final TextEditingController password = TextEditingController(
+    text: '123456',
+  );
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
+  void login() {
+    if (form.currentState!.validate()) {
+      Navigator.pushReplacementNamed(
+        context,
+        '/student/home',
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 480,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: form,
+                child: ListView(
+                  children: [
+                    const SizedBox(height: 44),
+                    Icon(
+                      Icons.school_rounded,
+                      size: 66,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      'أهلاً بعودتك',
+                      textAlign: TextAlign.center,
+                      style:
+                      Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'سجّل الدخول لمتابعة رحلتك التعليمية',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    AppTextField(
+                      label: 'البريد الإلكتروني',
+                      controller: email,
+                      validator: Validators.email,
+                    ),
+                    const SizedBox(height: 14),
+                    AppTextField(
+                      label: 'كلمة المرور',
+                      controller: password,
+                      validator: Validators.password,
+                      obscureText: true,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/forgot-password',
+                          );
+                        },
+                        child: const Text('نسيت كلمة المرور؟'),
+                      ),
+                    ),
+                    AppButton(
+                      label: 'تسجيل الدخول',
+                      onPressed: login,
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/register',
+                        );
+                      },
+                      child: const Text('إنشاء حساب جديد'),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'للمعاينة: استخدم admin@demo.com للمدير أو advisor@demo.com للمستشار.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> form = GlobalKey<FormState>();
+
+  final List<String> fields = [
+    'الاسم الكامل',
+    'البريد الإلكتروني',
+    'رقم الهاتف',
+    'كلمة المرور',
+    'تأكيد كلمة المرور',
+    'المرحلة الدراسية',
+    'المعدل',
+    'المدينة',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('إنشاء حساب طالب'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: form,
+          child: ListView(
+            children: [
+              const Text(
+                'ابدأ ملفك التعليمي',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 18),
+              ...fields.map(
+                    (field) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: AppTextField(
+                    label: field,
+                    obscureText: field.contains('كلمة'),
+                    keyboardType: field == 'المعدل'
+                        ? TextInputType.number
+                        : null,
+                    validator: field == 'البريد الإلكتروني'
+                        ? Validators.email
+                        : field == 'المعدل'
+                        ? Validators.gpa
+                        : Validators.required,
+                  ),
+                ),
+              ),
+              const Text(
+                'اختر اهتماماتك ومهاراتك بعد إنشاء الحساب لإكمال ملفك.',
+              ),
+              const SizedBox(height: 16),
+              AppButton(
+                label: 'إنشاء الحساب',
+                onPressed: () {
+                  if (form.currentState!.validate()) {
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/student/home',
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController email = TextEditingController();
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'استعادة كلمة المرور',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'سنرسل رابط إعادة التعيين إلى بريدك الإلكتروني.',
+            ),
+            const SizedBox(height: 24),
+            AppTextField(
+              label: 'البريد الإلكتروني',
+              controller: email,
+              validator: Validators.email,
+            ),
+            const SizedBox(height: 16),
+            AppButton(
+              label: 'إرسال الرابط',
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '/reset-password',
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ResetPasswordScreen extends StatelessWidget {
+  const ResetPasswordScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('تعيين كلمة مرور جديدة'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            const AppTextField(
+              label: 'كلمة المرور الجديدة',
+              obscureText: true,
+            ),
+            const SizedBox(height: 12),
+            const AppTextField(
+              label: 'تأكيد كلمة المرور',
+              obscureText: true,
+            ),
+            const SizedBox(height: 16),
+            AppButton(
+              label: 'حفظ كلمة المرور',
+              onPressed: () {
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName('/login'),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
